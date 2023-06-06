@@ -37,6 +37,7 @@ public class Main {
     @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/authenticate")
     public ResponseEntity<?> authenticate(@RequestBody AuthenticationRequest authenticationRequest) {
+        System.out.println("Main.authenticate: " + authenticationRequest.getUsername() + " " + authenticationRequest.getPassword());
         Authentication authenticate = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
         );
