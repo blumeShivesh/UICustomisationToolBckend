@@ -30,24 +30,11 @@ public class JwtRequestFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        System.out.println(request);
         HttpServletRequest httpServletRequest=(HttpServletRequest) request;
         String rawCookie = httpServletRequest.getHeader("Cookie");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Authentication: " + authentication);
-//        if (authentication != null && authentication instanceof JwtAuthenticationToken) {
-//            JwtAuthenticationToken jwtAuthentication = (JwtAuthenticationToken) authentication;
-//            String token = jwtAuthentication.getToken().getTokenValue();
-//
-//            // Use the token for further processing or validation
-//
-//            return "Success";
-//        }
-
-        System.out.println("Raw Cookie: " + rawCookie);
+        System.out.println("authentication: "+authentication);
         final String authorizationHeader = httpServletRequest.getHeader("authorization");
-            System.out.println("Authorization Header: " + authorizationHeader);;
-            System.out.println("Header Names: " + httpServletRequest.getHeaderNames());
             String jwtToken = null;
             String username = null;
             String bearerToken = httpServletRequest.getHeader("Authorization");

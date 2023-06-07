@@ -7,7 +7,7 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Table(name = "sections")
+@Table(name = "json_storage")
 
 public class Section extends JsonStorage {
     @Id
