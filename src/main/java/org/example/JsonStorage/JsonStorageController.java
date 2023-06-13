@@ -1,8 +1,11 @@
 package org.example.JsonStorage;
 
+import org.example.models.JwtUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 @RestController
@@ -10,6 +13,8 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000/")
 public class JsonStorageController {
     private final JsonStorageService jsonStorageService;
+    @Autowired
+    JwtUserRepository jwtUserRepository;
 
     @Autowired
     public JsonStorageController(JsonStorageService jsonStorageService) {
@@ -30,8 +35,23 @@ public class JsonStorageController {
 
     @GetMapping("/{id}")
     public ResponseEntity<String> getJsonById(@PathVariable Long id) {
-        String jsonStorage = jsonStorageService.getJsonById(id);
-        return ResponseEntity.ok(jsonStorage);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email= authentication.getName();
+        String orgCode= jwtUserRepository.findUserByEmail(email).getOrgCode();
+
+        if(orgCode==null){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        } else if (orgCode.equals("admin")) {
+            String jsonStorage = jsonStorageService.getJsonById(id);
+            return ResponseEntity.ok(jsonStorage);
+
+        }
+        else
+        {
+            String jsonStorage = jsonStorageService.getJsonById(id);
+            return ResponseEntity.ok(jsonStorage);
+
+        }
     }
 
     @DeleteMapping("/{id}")

@@ -72,7 +72,7 @@ public class Main {
                     .badRequest()
                     .body(new ResponseEntity<>("Error: Email is already taken!", null, 400));
         }
-        JwtUser jwtUser = new JwtUser(signUpRequest.getUsername(),signUpRequest.getEmail());
+        JwtUser jwtUser = new JwtUser(signUpRequest.getUsername(),signUpRequest.getEmail(),signUpRequest.getOrgCode());
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         jwtUser.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
 
@@ -103,8 +103,21 @@ public class Main {
         catch (Exception e) {
             System.out.println("Main.authenticateUser: " + e.getMessage());
         }
-        return ResponseEntity.ok(new AuthenticationResponse("Username or password is wrong"));
+        return ResponseEntity.ok(new ResponseEntity("Username or password is wrong", null, 400));
+    }
 
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/userOrgCode")
+    public ResponseEntity<?> getUserOrgCode() {
+        System.out.println("Main.getUserOrgCode: ");
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        System.out.println("Main.getUserOrgCode: " + currentPrincipalName);
+        JwtUser jwtUser = jwtUserRepository.findUserByEmail(currentPrincipalName);
+        System.out.println("Main.getUserOrgCode: " + jwtUser.getEmail());
+        System.out.println("Main.getUserOrgCode: " + jwtUser.getUsername());
+
+        return ResponseEntity.ok(new ResponseEntity<>(jwtUser.getOrgCode(), null, 200));
     }
 
 

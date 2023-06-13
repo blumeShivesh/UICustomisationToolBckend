@@ -29,8 +29,9 @@ public class JwtUser {
 
     public JwtUser(){}
 
-    public JwtUser(String username, String email) {
+    public JwtUser(String username, String email,String orgCode) {
         this.username = username;
         this.email = email;
+        this.orgCode = orgCode;
     }
 }
