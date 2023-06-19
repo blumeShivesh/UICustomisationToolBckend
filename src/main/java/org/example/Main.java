@@ -77,7 +77,7 @@ public class Main {
         JwtUser jwtUser = new JwtUser(signUpRequest.getUsername(),signUpRequest.getEmail());
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         jwtUser.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
-
+// huadkhdasjdlaw
         jwtUserRepository.save(jwtUser);
         return ResponseEntity.ok(new ResponseEntity<>("User registered successfully", null, 200));
 
