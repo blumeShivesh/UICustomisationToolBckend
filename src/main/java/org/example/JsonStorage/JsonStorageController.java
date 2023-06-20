@@ -28,6 +28,10 @@ public class JsonStorageController {
         System.out.println("JsonStorageController.saveJson: " + jsonStorage.getJsonData());
         System.out.println("JsonStorageController.saveMode: "+jsonStorage.getMode());
         String savedJson = jsonStorageService.saveJson(jsonStorage);
+        System.out.println("JsonStorageController.saveCreatedTimeStamp: "+jsonStorage.getCreatedOn());
+        System.out.println("JsonStorageController.saveUpdatedTimeStamp: "+jsonStorage.getLastUpdatedOn());
+        System.out.println("JsonStorageController.saveCreatedBy: "+jsonStorage.getCreatedBy());
+        System.out.println("JsonStorageController.saveUpdatedBy: "+jsonStorage.getUpdatedBy());
         return ResponseEntity.status(HttpStatus.CREATED).body(savedJson);
     }
 
@@ -53,6 +57,10 @@ public class JsonStorageController {
     @PatchMapping("/update/{mode}/{id}")
     public ResponseEntity<String> updateJson(@PathVariable("id") Long id, @RequestBody JsonStorage jsonStorage) {
         System.out.println("JsonStorageController.updateJson: " + jsonStorage.getJsonData());
+        System.out.println("JsonStorageController.CreatedInstant: "+jsonStorage.getCreatedOn());
+        System.out.println("JsonStorageController.UpdatedInstant: "+jsonStorage.getLastUpdatedOn());
+        System.out.println("JsonStorageController.CreatedBy: "+jsonStorage.getCreatedBy());
+        System.out.println("JsonStorageController.UpdatedBy: "+jsonStorage.getUpdatedBy());
         String updatedJson = jsonStorageService.updateJson(id, jsonStorage);
         return ResponseEntity.ok(updatedJson);
     }
