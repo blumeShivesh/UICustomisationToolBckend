@@ -1,9 +1,14 @@
 package org.example.JsonStorage;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -12,22 +17,34 @@ import java.util.List;
 public class JsonStorageController {
     private final JsonStorageService jsonStorageService;
 
+
+    // Set the created by and updated by field
     @Autowired
     public JsonStorageController(JsonStorageService jsonStorageService) {
         this.jsonStorageService = jsonStorageService;
     }
 
     @GetMapping
-    public ResponseEntity<List<JsonStorage>> getJson() {
-        List<JsonStorage> jsonStorageList = jsonStorageService.getAllJson();
-        return ResponseEntity.ok(jsonStorageList);
-    }
+    public ResponseEntity<List<JsonStorageDTO>> getJson() {
 
+        List<JsonStorage> jsonStorageList = jsonStorageService.getAllJson();
+        List<JsonStorageDTO> jsonStorageDTOList = new ArrayList<>();
+        for(JsonStorage i: jsonStorageList){
+            JsonStorageDTO temp= new JsonStorageDTO(i.getId(),i.getJsonData(),i.getMode());
+            jsonStorageDTOList.add(temp);
+        }
+        return ResponseEntity.ok(jsonStorageDTOList);
+    }
     @PostMapping
     public ResponseEntity<String> saveJson(@RequestBody JsonStorage jsonStorage) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        // Set the created by and updated by fields
+        jsonStorage.setCreatedBy(username);
+        jsonStorage.setUpdatedBy(username);
+        String savedJson = jsonStorageService.saveJson(jsonStorage);
         System.out.println("JsonStorageController.saveJson: " + jsonStorage.getJsonData());
         System.out.println("JsonStorageController.saveMode: "+jsonStorage.getMode());
-        String savedJson = jsonStorageService.saveJson(jsonStorage);
         System.out.println("JsonStorageController.saveCreatedTimeStamp: "+jsonStorage.getCreatedOn());
         System.out.println("JsonStorageController.saveUpdatedTimeStamp: "+jsonStorage.getLastUpdatedOn());
         System.out.println("JsonStorageController.saveCreatedBy: "+jsonStorage.getCreatedBy());
@@ -36,9 +53,10 @@ public class JsonStorageController {
     }
 
     @GetMapping("/{mode}/{id}")
-    public ResponseEntity<JsonStorage> getJsonById(@PathVariable("id") Long id) {
+    public ResponseEntity<JsonStorageDTO> getJsonById(@PathVariable("id") Long id) {
         JsonStorage jsonStorage = jsonStorageService.getJsonById(id);
-        return ResponseEntity.ok(jsonStorage);
+        JsonStorageDTO jsonStorageDTO = new JsonStorageDTO(jsonStorage.getId(),jsonStorage.getJsonData(), jsonStorage.getMode());
+        return ResponseEntity.ok(jsonStorageDTO);
     }
 
     @DeleteMapping("/{mode}/{id}")
@@ -56,6 +74,12 @@ public class JsonStorageController {
 
     @PatchMapping("/update/{mode}/{id}")
     public ResponseEntity<String> updateJson(@PathVariable("id") Long id, @RequestBody JsonStorage jsonStorage) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Set the created by and updated by fields
+        jsonStorage.setCreatedBy(username);
+        jsonStorage.setUpdatedBy(username);
         System.out.println("JsonStorageController.updateJson: " + jsonStorage.getJsonData());
         System.out.println("JsonStorageController.CreatedInstant: "+jsonStorage.getCreatedOn());
         System.out.println("JsonStorageController.UpdatedInstant: "+jsonStorage.getLastUpdatedOn());
