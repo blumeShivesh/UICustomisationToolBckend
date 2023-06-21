@@ -4,6 +4,8 @@ import javax.persistence.*;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.example.JsonStorage.JsonStorage;
+import org.example.JsonStorage.JsonStorageRepository;
 import org.springframework.stereotype.Service;
 
 @Getter
@@ -14,6 +16,10 @@ public class JwtUser {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+//    @OneToOne(mappedBy = "jwtuser",cascade = {CascadeType.ALL})
+
+//    private JsonStorage jsonStorage;
 
     @Column(name="username")
     private String username;
@@ -26,6 +32,10 @@ public class JwtUser {
 
     @Column(name="password")
     private String password;
+
+
+
+
 
     public JwtUser(){}
 

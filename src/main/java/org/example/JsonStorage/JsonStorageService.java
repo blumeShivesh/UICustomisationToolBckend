@@ -2,6 +2,8 @@ package org.example.JsonStorage;
 
 import org.example.exception.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +18,14 @@ public class JsonStorageService {
     }
 
     public String saveJson(JsonStorage jsonStorage) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        // Set the created by and updated by fields
+        jsonStorage.setCreatedBy(username);
+        jsonStorage.setUpdatedBy(username);
+        //        JwtUser jwtUser = jwtUserRepository.findUserByUserName(username);
+        //        jsonStorage.setJwtuser(jwtUser);
+        //        jsonStorage.setOrgCode(jwtUser.getOrgCode());
         System.out.println("JsonStorageService.saveJson: " + jsonStorage.getJsonData());
         JsonStorage savedJson = jsonStorageRepository.save(jsonStorage);
         System.out.println("JsonStorageService.saveJson: " + savedJson.getJsonData());
@@ -44,6 +54,12 @@ public class JsonStorageService {
                 .orElseThrow(() -> new NotFoundException("JsonStorage not found with id: " + id));
         existingJson.setJsonData(jsonStorage.getJsonData());
         existingJson.setMode(jsonStorage.getMode());
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        // Set the created by and updated by fields
+        jsonStorage.setCreatedBy(username);
+        jsonStorage.setUpdatedBy(username);
         return jsonStorageRepository.save(existingJson).getJsonData();
     }
     // Add other service methods as needed

@@ -1,5 +1,7 @@
 package org.example.JsonStorage;
 
+import org.example.models.JwtUser;
+import org.example.models.JwtUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,10 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:3000")
 public class JsonStorageController {
     private final JsonStorageService jsonStorageService;
+
+    @Autowired
+    private JwtUserRepository jwtUserRepository;
+
 
 
     // Set the created by and updated by field
@@ -37,11 +43,6 @@ public class JsonStorageController {
     }
     @PostMapping
     public ResponseEntity<String> saveJson(@RequestBody JsonStorage jsonStorage) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        // Set the created by and updated by fields
-        jsonStorage.setCreatedBy(username);
-        jsonStorage.setUpdatedBy(username);
         String savedJson = jsonStorageService.saveJson(jsonStorage);
         System.out.println("JsonStorageController.saveJson: " + jsonStorage.getJsonData());
         System.out.println("JsonStorageController.saveMode: "+jsonStorage.getMode());
@@ -74,12 +75,6 @@ public class JsonStorageController {
 
     @PatchMapping("/update/{mode}/{id}")
     public ResponseEntity<String> updateJson(@PathVariable("id") Long id, @RequestBody JsonStorage jsonStorage) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-
-        // Set the created by and updated by fields
-        jsonStorage.setCreatedBy(username);
-        jsonStorage.setUpdatedBy(username);
         System.out.println("JsonStorageController.updateJson: " + jsonStorage.getJsonData());
         System.out.println("JsonStorageController.CreatedInstant: "+jsonStorage.getCreatedOn());
         System.out.println("JsonStorageController.UpdatedInstant: "+jsonStorage.getLastUpdatedOn());

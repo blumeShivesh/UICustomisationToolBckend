@@ -9,4 +9,9 @@ public interface JwtUserRepository extends JpaRepository<JwtUser, Long> {
             value = "SELECT * FROM jwt_user WHERE email = :email"
     )
     JwtUser findUserByEmail(@Param("email") String email);
+
+    @Query(nativeQuery = true,
+            value = "SELECT * FROM jwt_user WHERE username = :username"
+    )
+    JwtUser findUserByUserName(@Param("username") String username);
 }
