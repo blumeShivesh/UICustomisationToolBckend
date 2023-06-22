@@ -55,7 +55,8 @@ public class JsonStorageController {
 
     @GetMapping("/{mode}/{id}")
     public ResponseEntity<JsonStorageDTO> getJsonById(@PathVariable("id") Long id) {
-        JsonStorage jsonStorage = jsonStorageService.getJsonById(id);
+//        JsonStorage jsonStorage = jsonStorageService.getJsonById(id);
+        JsonStorage jsonStorage = jsonStorageService.getJsonById2(id);
         JsonStorageDTO jsonStorageDTO = new JsonStorageDTO(jsonStorage.getId(),jsonStorage.getJsonData(), jsonStorage.getMode());
         return ResponseEntity.ok(jsonStorageDTO);
     }
