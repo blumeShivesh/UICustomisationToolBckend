@@ -14,4 +14,5 @@ public interface JwtUserRepository extends JpaRepository<JwtUser, Long> {
             value = "SELECT * FROM jwt_user WHERE username = :username"
     )
     JwtUser findUserByUserName(@Param("username") String username);
+
 }

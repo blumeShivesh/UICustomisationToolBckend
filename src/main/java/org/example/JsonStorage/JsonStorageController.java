@@ -43,16 +43,15 @@ public class JsonStorageController {
         return ResponseEntity.ok(jsonStorageDTOList);
     }
     @PostMapping
-    public ResponseEntity<String> saveJson(@RequestBody JsonStoragePostRequest JsonStoragePostRequest) {
-        System.out.println("JsonStorageController.saveJson: " + JsonStoragePostRequest.getJsonData());
-        JsonStorage jsonStorage = new JsonStorage(JsonStoragePostRequest.getJsonData(), JsonStoragePostRequest.getMode());
-        String savedJson = jsonStorageService.saveJson(jsonStorage);
-//        System.out.println("JsonStorageController.saveJson: " + jsonStorage.getJsonData());
-//        System.out.println("JsonStorageController.saveMode: "+jsonStorage.getMode());
-//        System.out.println("JsonStorageController.saveCreatedTimeStamp: "+jsonStorage.getCreatedOn());
-//        System.out.println("JsonStorageController.saveUpdatedTimeStamp: "+jsonStorage.getLastUpdatedOn());
-//        System.out.println("JsonStorageController.saveCreatedBy: "+jsonStorage.getCreatedBy());
-//        System.out.println("JsonStorageController.saveUpdatedBy: "+jsonStorage.getUpdatedBy());
+    public ResponseEntity<String> saveJson(@RequestBody JsonStorage jsonStorage) {
+        String savedJson;
+        savedJson = jsonStorageService.saveJson(jsonStorage);
+        System.out.println("JsonStorageController.saveJson: " + jsonStorage.getJsonData());
+        System.out.println("JsonStorageController.saveMode: "+jsonStorage.getMode());
+        System.out.println("JsonStorageController.saveCreatedTimeStamp: "+jsonStorage.getCreatedOn());
+        System.out.println("JsonStorageController.saveUpdatedTimeStamp: "+jsonStorage.getLastUpdatedOn());
+        System.out.println("JsonStorageController.saveCreatedBy: "+jsonStorage.getCreatedBy());
+        System.out.println("JsonStorageController.saveUpdatedBy: "+jsonStorage.getUpdatedBy());
         return ResponseEntity.status(HttpStatus.CREATED).body(savedJson);
     }
 

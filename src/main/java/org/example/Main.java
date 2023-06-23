@@ -65,7 +65,7 @@ public class Main {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser( @RequestBody @NotNull SignUpRequest signUpRequest)
     {
-        System.out.println("Main.registerUser: " + signUpRequest.getEmail() + " " + signUpRequest.getUsername() + " " + signUpRequest.getOrgCode()+" "+signUpRequest.getPassword());
+        System.out.println("Main.registerUser: " + signUpRequest.getEmail() + " " + signUpRequest.getUsername() + " " +signUpRequest.getOrgCode()+" "+ signUpRequest.getPassword());
 
 
         if(jwtUserRepository.findUserByEmail(signUpRequest.getEmail())!= null)
@@ -74,7 +74,7 @@ public class Main {
                     .badRequest()
                     .body(new ResponseEntity<>("Error: Email is already taken!", null, 400));
         }
-        JwtUser jwtUser = new JwtUser(signUpRequest.getUsername(),signUpRequest.getEmail());
+        JwtUser jwtUser = new JwtUser(signUpRequest.getUsername(),signUpRequest.getEmail(),signUpRequest.getOrgCode());
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         jwtUser.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         jwtUser.setOrgCode(signUpRequest.getOrgCode());

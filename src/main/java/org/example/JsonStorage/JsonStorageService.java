@@ -6,8 +6,14 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.example.exception.NotFoundException;
+<<<<<<< HEAD
+=======
+import org.example.models.JwtUser;
+>>>>>>> e51a1bcc1347d0fd2b127ac5f092ec6991fa68ca
 import org.example.models.JwtUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -24,6 +30,8 @@ public class JsonStorageService {
     public JsonStorageService(JsonStorageRepository jsonStorageRepository) {
         this.jsonStorageRepository = jsonStorageRepository;
     }
+    @Autowired
+    JwtUserRepository jwtUserRepository ;
 
     public String saveJson(JsonStorage jsonStorage) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -31,8 +39,14 @@ public class JsonStorageService {
         // Set the created by and updated by fields
         jsonStorage.setCreatedBy(username);
         jsonStorage.setUpdatedBy(username);
-        JwtUser jwtUser = jwtUserRepository.findUserByEmail(username);
-        jsonStorage.setOrgCode(jwtUser.getOrgCode());
+        if(jwtUserRepository.findUserByUserName(username)!=null){
+            JwtUser jwtUser = jwtUserRepository.findUserByUserName(jsonStorage.getCreatedBy());
+            String orgCode = jwtUser.getOrgCode();
+            jsonStorage.setOrgCode(orgCode);
+        }
+        //        JwtUser jwtUser = jwtUserRepository.findUserByUserName(username);
+        //        jsonStorage.setJwtuser(jwtUser);
+        //        jsonStorage.setOrgCode(jwtUser.getOrgCode());
         System.out.println("JsonStorageService.saveJson: " + jsonStorage.getJsonData());
         JsonStorage savedJson = jsonStorageRepository.save(jsonStorage);
         System.out.println("JsonStorageService.saveJson: " + savedJson.getJsonData());
