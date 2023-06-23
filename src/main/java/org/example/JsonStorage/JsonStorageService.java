@@ -6,16 +6,19 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.example.exception.NotFoundException;
+import org.example.models.JwtUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
+import org.example.models.JwtUser;
 import java.util.List;
 
 @Service
 public class JsonStorageService {
     private final JsonStorageRepository jsonStorageRepository;
+    @Autowired
+    jwtUserRepository jwtUserRepository;
 
     @Autowired
     public JsonStorageService(JsonStorageRepository jsonStorageRepository) {
@@ -28,9 +31,8 @@ public class JsonStorageService {
         // Set the created by and updated by fields
         jsonStorage.setCreatedBy(username);
         jsonStorage.setUpdatedBy(username);
-        //        JwtUser jwtUser = jwtUserRepository.findUserByUserName(username);
-        //        jsonStorage.setJwtuser(jwtUser);
-        //        jsonStorage.setOrgCode(jwtUser.getOrgCode());
+        JwtUser jwtUser = jwtUserRepository.findUserByEmail(username);
+        jsonStorage.setOrgCode(jwtUser.getOrgCode());
         System.out.println("JsonStorageService.saveJson: " + jsonStorage.getJsonData());
         JsonStorage savedJson = jsonStorageRepository.save(jsonStorage);
         System.out.println("JsonStorageService.saveJson: " + savedJson.getJsonData());

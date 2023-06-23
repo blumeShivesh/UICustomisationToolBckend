@@ -65,7 +65,7 @@ public class Main {
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser( @RequestBody @NotNull SignUpRequest signUpRequest)
     {
-        System.out.println("Main.registerUser: " + signUpRequest.getEmail() + " " + signUpRequest.getUsername() + " " + signUpRequest.getPassword());
+        System.out.println("Main.registerUser: " + signUpRequest.getEmail() + " " + signUpRequest.getUsername() + " " + signUpRequest.getOrgCode()+" "+signUpRequest.getPassword());
 
 
         if(jwtUserRepository.findUserByEmail(signUpRequest.getEmail())!= null)
@@ -77,6 +77,7 @@ public class Main {
         JwtUser jwtUser = new JwtUser(signUpRequest.getUsername(),signUpRequest.getEmail());
         BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         jwtUser.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
+        jwtUser.setOrgCode(signUpRequest.getOrgCode());
         jwtUserRepository.save(jwtUser);
         return ResponseEntity.ok(new ResponseEntity<>("User registered successfully", null, 200));
 

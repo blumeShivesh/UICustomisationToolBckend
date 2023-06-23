@@ -34,6 +34,10 @@ public class Section extends JsonStorage {
     @OneToMany(cascade = CascadeType.ALL)
     @JoinColumn(name = "section_id")
     private List<Tiles> tilesList;
+
+    public Section(String jsonData, String mode) {
+        super(jsonData, mode);
+    }
     // ... include other properties as needed
 
     // Getters and setters

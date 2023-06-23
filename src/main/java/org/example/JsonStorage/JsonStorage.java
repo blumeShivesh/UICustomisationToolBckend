@@ -39,9 +39,9 @@ public class JsonStorage {
     @UpdateTimestamp
     private Instant lastUpdatedOn;
 
-//    @OneToOne(cascade = CascadeType.ALL)
-//    @JoinColumn(name="jwt_user_id")
-//    private JwtUser jwtuser;
+    public JsonStorage(String jsonData, String mode) {
+    }
+
 
     @PrePersist
     // we might have a millisecond time diff between updated time and created time during the first creation of time stamp , so we use these methods
@@ -51,6 +51,9 @@ public class JsonStorage {
     @PreUpdate
     protected void onUpdate(){
         lastUpdatedOn  = Instant.now();
+    }
+
+    public void setJwtuser(JwtUser jwtUser) {
     }
 
 
