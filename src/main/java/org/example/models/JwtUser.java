@@ -43,4 +43,9 @@ public class JwtUser {
         this.username = username;
         this.email = email;
     }
+    public JwtUser(String username, String email,String orgCode) {
+        this.username = username;
+        this.email = email;
+        this.orgCode = orgCode;
+    }
 }

@@ -43,7 +43,8 @@ public class JsonStorageController {
     }
     @PostMapping
     public ResponseEntity<String> saveJson(@RequestBody JsonStorage jsonStorage) {
-        String savedJson = jsonStorageService.saveJson(jsonStorage);
+        String savedJson;
+        savedJson = jsonStorageService.saveJson(jsonStorage);
         System.out.println("JsonStorageController.saveJson: " + jsonStorage.getJsonData());
         System.out.println("JsonStorageController.saveMode: "+jsonStorage.getMode());
         System.out.println("JsonStorageController.saveCreatedTimeStamp: "+jsonStorage.getCreatedOn());
@@ -56,7 +57,7 @@ public class JsonStorageController {
     @GetMapping("/{mode}/{id}")
     public ResponseEntity<JsonStorageDTO> getJsonById(@PathVariable("id") Long id) {
 //        JsonStorage jsonStorage = jsonStorageService.getJsonById(id);
-        JsonStorage jsonStorage = jsonStorageService.getJsonById2(id);
+        JsonStorage jsonStorage = jsonStorageService.getJsonById(id);
         JsonStorageDTO jsonStorageDTO = new JsonStorageDTO(jsonStorage.getId(),jsonStorage.getJsonData(), jsonStorage.getMode());
         return ResponseEntity.ok(jsonStorageDTO);
     }
