@@ -6,10 +6,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.example.exception.NotFoundException;
-<<<<<<< HEAD
-=======
+
 import org.example.models.JwtUser;
->>>>>>> e51a1bcc1347d0fd2b127ac5f092ec6991fa68ca
 import org.example.models.JwtUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -18,36 +16,31 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.example.models.JwtUser;
+import org.example.models.JwtUserRepository;
 import java.util.List;
 
 @Service
 public class JsonStorageService {
     private final JsonStorageRepository jsonStorageRepository;
     @Autowired
-    jwtUserRepository jwtUserRepository;
+    JwtUserRepository jwtUserRepository;
 
     @Autowired
     public JsonStorageService(JsonStorageRepository jsonStorageRepository) {
         this.jsonStorageRepository = jsonStorageRepository;
     }
-    @Autowired
-    JwtUserRepository jwtUserRepository ;
 
     public String saveJson(JsonStorage jsonStorage) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = authentication.getName();
-        // Set the created by and updated by fields
-        jsonStorage.setCreatedBy(username);
-        jsonStorage.setUpdatedBy(username);
-        if(jwtUserRepository.findUserByUserName(username)!=null){
-            JwtUser jwtUser = jwtUserRepository.findUserByUserName(jsonStorage.getCreatedBy());
-            String orgCode = jwtUser.getOrgCode();
-            jsonStorage.setOrgCode(orgCode);
-        }
-        //        JwtUser jwtUser = jwtUserRepository.findUserByUserName(username);
-        //        jsonStorage.setJwtuser(jwtUser);
-        //        jsonStorage.setOrgCode(jwtUser.getOrgCode());
-        System.out.println("JsonStorageService.saveJson: " + jsonStorage.getJsonData());
+        String email = authentication.getName();
+        jsonStorage.setCreatedBy(email);
+        jsonStorage.setUpdatedBy(email);
+        System.out.println("JsonStorageService.saveJson: " + email);
+        System.out.println("JsonStorageService.saveJson: " + jwtUserRepository.findUserByEmail(email));
+        JwtUser user = jwtUserRepository.findUserByEmail(email);
+        jsonStorage.setOrgCode(user.getOrgCode());
+
+        System.out.println("JsonStorageService.saveJson: " + jsonStorage.getOrgCode());
         JsonStorage savedJson = jsonStorageRepository.save(jsonStorage);
         System.out.println("JsonStorageService.saveJson: " + savedJson.getJsonData());
         return savedJson.getJsonData();
@@ -57,7 +50,9 @@ public class JsonStorageService {
 public JsonStorage getJsonById(Long id) {
     JsonStorage jsonStorage = jsonStorageRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("JsonStorage not found with id: " + id));
-    if(jsonStorage.getOrgCode()=="admin") return jsonStorage;
+    if(jsonStorage.getOrgCode() != null && !jsonStorage.getOrgCode().isEmpty() ) {
+        return jsonStorage;
+    }
     String jsondata = jsonStorage.getJsonData();
     // method to convert the string to json and remove necessary things
     ObjectMapper mapper = new ObjectMapper();
@@ -85,10 +80,18 @@ public JsonStorage getJsonById(Long id) {
 }
 
     public List<JsonStorage> getAllJson() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        JwtUser user = jwtUserRepository.findUserByEmail(email);
 
-         List<JsonStorage> jsonStorageList =     jsonStorageRepository.findAll();
-         return jsonStorageList;
+         List<JsonStorage> jsonStorageList =     jsonStorageRepository.findByOrgCode(user.getOrgCode());
+        JsonStorage defaultJson = jsonStorageRepository.findByOrgCodeDefault();
+         System.out.println("JsonStorageService.getAllJson: " + defaultJson);
+         if (defaultJson != null) {
+            jsonStorageList.add(defaultJson);
+        }
 
+        return jsonStorageList;
     }
 
     public void deleteJson(Long id) {
@@ -111,6 +114,12 @@ public JsonStorage getJsonById(Long id) {
         jsonStorage.setCreatedBy(username);
         jsonStorage.setUpdatedBy(username);
         return jsonStorageRepository.save(existingJson).getJsonData();
+    }
+
+    public JsonStorage getDefaultTemplate() {
+        JsonStorage defaultjson= jsonStorageRepository.findByOrgCodeDefault();
+        System.out.println("JsonStorageService.getDefaultTemplate: " + defaultjson);
+        return defaultjson;
     }
     // Add other service methods as needed
 }

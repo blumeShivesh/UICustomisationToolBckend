@@ -17,6 +17,7 @@ import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import org.example.exception.CustomException;
 
 @Component
 public class JwtRequestFilter implements Filter {
@@ -29,27 +30,41 @@ public class JwtRequestFilter implements Filter {
 
 
     @Override
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException,CustomException{
         HttpServletRequest httpServletRequest=(HttpServletRequest) request;
+        HttpServletResponse httpServletResponse=(HttpServletResponse) response;
         String rawCookie = httpServletRequest.getHeader("Cookie");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("authentication: "+authentication);
         final String authorizationHeader = httpServletRequest.getHeader("authorization");
-            String jwtToken = null;
-            String username = null;
-            String bearerToken = httpServletRequest.getHeader("Authorization");
-            if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+        System.out.println("authorizationHeader: "+authorizationHeader);
+        String jwtToken = null;
+        String username = null;
+        String bearerToken = httpServletRequest.getHeader("Authorization");
+        System.out.println("bearerToken: "+bearerToken);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
+            try {
                 jwtToken = bearerToken.substring(7, bearerToken.length());
                 username = jwtUtil.extractUsername(jwtToken);
-                if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                    UserDetails userDetails = userDetailsService.loadUserByUsername(username);
-                    if (jwtUtil.validateToken(jwtToken, userDetails)) {
-                        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
-                        usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
-                        SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
-                    }
+            }
+            catch (Exception e){
+                System.out.println("Exception: "+e);
+            }
+            System.out.println("jwtToken: "+jwtToken);
+            System.out.println("username: "+username);
+
+            if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+                if (jwtUtil.validateToken(jwtToken, userDetails)) {
+                    UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+                    usernamePasswordAuthenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(httpServletRequest));
+                    SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
                 }
             }
-            chain.doFilter(request, response);
+            else{
+                System.out.println("jwtToken is null");
+//                httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+            }
+        }
+        chain.doFilter(request, response);
         }
 }

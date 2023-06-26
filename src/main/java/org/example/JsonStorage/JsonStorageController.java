@@ -44,22 +44,20 @@ public class JsonStorageController {
     }
     @PostMapping
     public ResponseEntity<String> saveJson(@RequestBody JsonStorage jsonStorage) {
-        String savedJson;
-        savedJson = jsonStorageService.saveJson(jsonStorage);
         System.out.println("JsonStorageController.saveJson: " + jsonStorage.getJsonData());
-        System.out.println("JsonStorageController.saveMode: "+jsonStorage.getMode());
-        System.out.println("JsonStorageController.saveCreatedTimeStamp: "+jsonStorage.getCreatedOn());
-        System.out.println("JsonStorageController.saveUpdatedTimeStamp: "+jsonStorage.getLastUpdatedOn());
-        System.out.println("JsonStorageController.saveCreatedBy: "+jsonStorage.getCreatedBy());
-        System.out.println("JsonStorageController.saveUpdatedBy: "+jsonStorage.getUpdatedBy());
+        String savedJson;
+        System.out.println("JsonStorageController.saveJson: " + jsonStorage.getJsonData());
+        savedJson = jsonStorageService.saveJson(jsonStorage);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedJson);
     }
 
     @GetMapping("/{mode}/{id}")
     public ResponseEntity<JsonStorageDTO> getJsonById(@PathVariable("id") Long id) {
+        System.out.println("JsonStorageController.getJsonById: " + id);
 //        JsonStorage jsonStorage = jsonStorageService.getJsonById(id);
         JsonStorage jsonStorage = jsonStorageService.getJsonById(id);
         JsonStorageDTO jsonStorageDTO = new JsonStorageDTO(jsonStorage.getId(),jsonStorage.getJsonData(), jsonStorage.getMode());
+        System.out.println("JsonStorageController.getJsonById: " + jsonStorageDTO.getJsonData());
         return ResponseEntity.ok(jsonStorageDTO);
     }
 
@@ -76,15 +74,20 @@ public class JsonStorageController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/update/{mode}/{id}")
+    @PatchMapping("/update/{id}")
     public ResponseEntity<String> updateJson(@PathVariable("id") Long id, @RequestBody JsonStorage jsonStorage) {
-        System.out.println("JsonStorageController.updateJson: " + jsonStorage.getJsonData());
-        System.out.println("JsonStorageController.CreatedInstant: "+jsonStorage.getCreatedOn());
-        System.out.println("JsonStorageController.UpdatedInstant: "+jsonStorage.getLastUpdatedOn());
-        System.out.println("JsonStorageController.CreatedBy: "+jsonStorage.getCreatedBy());
-        System.out.println("JsonStorageController.UpdatedBy: "+jsonStorage.getUpdatedBy());
         String updatedJson = jsonStorageService.updateJson(id, jsonStorage);
         return ResponseEntity.ok(updatedJson);
+    }
+
+    @GetMapping("/getDefaultTemplate/")
+    public ResponseEntity<JsonStorageDTO> getDefaultTemplate() {
+        System.out.println("JsonStorageController.getDefaultTemplate: ");
+        JsonStorage jsonStorage = jsonStorageService.getDefaultTemplate();
+        System.out.println("JsonStorageController.getDefaultTemplate: " + jsonStorage.getJsonData());
+        JsonStorageDTO jsonStorageDTO = new JsonStorageDTO(jsonStorage.getId(),jsonStorage.getJsonData(), jsonStorage.getMode());
+        System.out.println("JsonStorageController.getDefaultTemplate: " + jsonStorageDTO.getJsonData());
+        return ResponseEntity.ok(jsonStorageDTO);
     }
     // Add other controller methods as needed
 }

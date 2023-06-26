@@ -23,6 +23,9 @@ public class JsonStorage {
     @Column(nullable = false, columnDefinition = "TEXT")
     private String jsonData;
 
+    @Column(nullable = true, columnDefinition = "TEXT")
+    private String templateName;
+
     @Column(nullable = false, columnDefinition = "TEXT")
     private String mode;
 
@@ -39,23 +42,17 @@ public class JsonStorage {
     @UpdateTimestamp
     private Instant lastUpdatedOn;
 
-    public JsonStorage(String jsonData, String mode) {
-    }
-
 
     @PrePersist
-    // we might have a millisecond time diff between updated time and created time during the first creation of time stamp , so we use these methods
+// we might have a millisecond time diff between updated time and created time during the first creation of time stamp , so we use these methods
     protected void onCreate(){
         lastUpdatedOn = createdOn;
     }
     @PreUpdate
     protected void onUpdate(){
-        lastUpdatedOn  = Instant.now();
-    }
-
-    public void setJwtuser(JwtUser jwtUser) {
+        lastUpdatedOn = Instant.now();
     }
 
 
-    // Getters and setters
+// Getters and setters
 }
