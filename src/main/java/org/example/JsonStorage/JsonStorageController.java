@@ -76,6 +76,8 @@ public class JsonStorageController {
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<String> updateJson(@PathVariable("id") Long id, @RequestBody JsonStorage jsonStorage) {
+        System.out.println("JsonStorageController.updateJson: " + id);
+        System.out.println("JsonStorageController.updateJson: " + jsonStorage.getJsonData());
         String updatedJson = jsonStorageService.updateJson(id, jsonStorage);
         return ResponseEntity.ok(updatedJson);
     }
@@ -89,5 +91,12 @@ public class JsonStorageController {
         System.out.println("JsonStorageController.getDefaultTemplate: " + jsonStorageDTO.getJsonData());
         return ResponseEntity.ok(jsonStorageDTO);
     }
+//    @GetMapping("/getShipmentTemplate/")
+//    public ResponseEntity<JsonStorage> getShipmentTemplate(@PathVariable("mode") String mode) {
+//        System.out.println("JsonStorageController.getShipmentTemplate: ");
+//        JsonStorage jsonStorage = jsonStorageService.getShipmentTemplate(mode);
+//        System.out.println("JsonStorageController.getShipmentTemplate: " + jsonStorage.getJsonData());
+//        return ResponseEntity.ok(jsonStorage);
+//    }
     // Add other controller methods as needed
 }

@@ -11,8 +11,10 @@ import java.util.List;
 @Repository
 public interface JsonStorageRepository extends JpaRepository<JsonStorage, Long> {
 
-    @Query(value = "SELECT * FROM json_storage WHERE mode = 'DefaultBlumeTemplate'", nativeQuery = true)
+    @Query(value = "SELECT * FROM json_storage WHERE template_name = 'DefaultBlumeTemplate'", nativeQuery = true)
     JsonStorage findByOrgCodeDefault();
 
     List<JsonStorage> findByOrgCode(String orgCode);
+//    @Query(value = "SELECT * FROM json_storage WHERE org_code = :orgcode And mode=:mode", nativeQuery = true)
+//    JsonStorage findByOrgCodeAndMode(@Param("orgCode") String orgCode, @Param("mode")  String mode);
 }
