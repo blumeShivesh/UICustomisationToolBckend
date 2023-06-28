@@ -30,23 +30,23 @@ public class JsonStorageController {
     public JsonStorageController(JsonStorageService jsonStorageService) {
         this.jsonStorageService = jsonStorageService;
     }
-
+// return id,orgcode,mode,templatename
     @GetMapping
-    public ResponseEntity<List<JsonStorageDTO>> getJson() {
+    public ResponseEntity<List<JsonStorageCrux>> getJson() {
 
         List<JsonStorage> jsonStorageList = jsonStorageService.getAllJson();
-        List<JsonStorageDTO> jsonStorageDTOList = new ArrayList<>();
+        List<JsonStorageCrux> jsonStorageCruxList = new ArrayList<>();
         for(JsonStorage i: jsonStorageList){
-            JsonStorageDTO temp= new JsonStorageDTO(i.getId(),i.getJsonData(),i.getMode());
-            jsonStorageDTOList.add(temp);
+            JsonStorageCrux temp= new JsonStorageCrux(i.getOrgCode(),i.getTemplateName(),i.getMode(),i.getId());
+            jsonStorageCruxList.add(temp);
         }
-        return ResponseEntity.ok(jsonStorageDTOList);
+        return ResponseEntity.ok(jsonStorageCruxList);
     }
     @PostMapping
     public ResponseEntity<String> saveJson(@RequestBody JsonStorage jsonStorage) {
         System.out.println("JsonStorageController.saveJson: " + jsonStorage.getJsonData());
         String savedJson;
-        System.out.println("JsonStorageController.saveJson: " + jsonStorage.getJsonData());
+//        System.out.println("JsonStorageController.saveJson: " + jsonStorage.getJsonData());
         savedJson = jsonStorageService.saveJson(jsonStorage);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedJson);
     }
@@ -60,7 +60,7 @@ public class JsonStorageController {
         System.out.println("JsonStorageController.getJsonById: " + jsonStorageDTO.getJsonData());
         return ResponseEntity.ok(jsonStorageDTO);
     }
-
+    // u will have so many users with differnet mode, and for each user u can fetch data using
     @DeleteMapping("/{mode}/{id}")
     public ResponseEntity<Void> deleteJson(@PathVariable("id") Long id) {
         jsonStorageService.deleteJson(id);
@@ -82,7 +82,7 @@ public class JsonStorageController {
         return ResponseEntity.ok(updatedJson);
     }
 
-    @GetMapping("/getDefaultTemplate/")
+    @GetMapping("/getDefaultTemplate")
     public ResponseEntity<JsonStorageDTO> getDefaultTemplate() {
         System.out.println("JsonStorageController.getDefaultTemplate: ");
         JsonStorage jsonStorage = jsonStorageService.getDefaultTemplate();
@@ -91,12 +91,13 @@ public class JsonStorageController {
         System.out.println("JsonStorageController.getDefaultTemplate: " + jsonStorageDTO.getJsonData());
         return ResponseEntity.ok(jsonStorageDTO);
     }
-//    @GetMapping("/getShipmentTemplate/")
-//    public ResponseEntity<JsonStorage> getShipmentTemplate(@PathVariable("mode") String mode) {
-//        System.out.println("JsonStorageController.getShipmentTemplate: ");
-//        JsonStorage jsonStorage = jsonStorageService.getShipmentTemplate(mode);
-//        System.out.println("JsonStorageController.getShipmentTemplate: " + jsonStorage.getJsonData());
-//        return ResponseEntity.ok(jsonStorage);
-//    }
+    @GetMapping("/getShipmentTemplate/{mode}")
+    public ResponseEntity<JsonStorage> getShipmentTemplate(@PathVariable("mode") String mode) {
+        System.out.println("JsonStorageController.getShipmentTemplate: ");
+        JsonStorage jsonStorage = jsonStorageService.getShipmentTemplate(mode);
+        System.out.println("JsonStorageController.getShipmentTemplate: " + jsonStorage.getJsonData());
+        return ResponseEntity.ok(jsonStorage);
+    }
     // Add other controller methods as needed
 }
+

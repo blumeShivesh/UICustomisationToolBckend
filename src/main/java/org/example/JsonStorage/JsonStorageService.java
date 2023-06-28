@@ -14,6 +14,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+// should understand get all Json.
 
 @Service
 public class JsonStorageService {
@@ -28,7 +29,7 @@ public class JsonStorageService {
 
     public String saveJson(JsonStorage jsonStorage) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
+        String email = authentication.getName(); // returns the email
         jsonStorage.setCreatedBy(email);
         jsonStorage.setUpdatedBy(email);
         System.out.println("JsonStorageService.saveJson: " + email);
@@ -44,7 +45,7 @@ public class JsonStorageService {
 public JsonStorage getJsonById(Long id) {
     JsonStorage jsonStorage = jsonStorageRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("JsonStorage not found with id: " + id));
-    if(jsonStorage.getOrgCode() != null && !jsonStorage.getOrgCode().isEmpty() ) {
+    if(jsonStorage.getOrgCode() !=null&&jsonStorage.getOrgCode()=="admin") {
         return jsonStorage;
     }
     String jsondata = jsonStorage.getJsonData();
@@ -116,35 +117,35 @@ public JsonStorage getJsonById(Long id) {
         return defaultjson;
     }
 
-//    public JsonStorage getShipmentTemplate(String mode) {
-//        String email= SecurityContextHolder.getContext().getAuthentication().getName();
-//        JwtUser user= jwtUserRepository.findUserByEmail(email);
-//
-//
-//        JsonStorage jsonStorage = (JsonStorage) jsonStorageRepository.findByOrgCodeAndMode(user.getOrgCode(),mode);
-//        String jsondata = jsonStorage.getJsonData();
-//        // method to convert the string to json and remove necessary things
-//        ObjectMapper mapper = new ObjectMapper();
-//
-//        try {
-//            ArrayNode arrayNode = (ArrayNode) mapper.readTree(jsondata);
-//
-//            for (JsonNode rootNode : arrayNode) {
-//                ((ObjectNode) rootNode).remove("isDragEnabled");
-//                ((ObjectNode) rootNode).remove("isDropEnabledAllSections");
-//                ((ObjectNode) rootNode).remove("dropEnabledSections");
-//                ((ObjectNode) rootNode).remove("itemsDropEnabledSections");
-//                ((ObjectNode) rootNode).remove("isDropEnable");
-//                ((ObjectNode) rootNode).remove("isitemDragEnabled");
-//                ((ObjectNode) rootNode).remove("isitemDropEnabled");
-//            }
-//
-//            String modifiedJson = mapper.writeValueAsString(arrayNode);
-//            jsonStorage.setJsonData(modifiedJson);
-//
-//            return jsonStorage;
-//        } catch (JsonProcessingException e) {
-//            throw new RuntimeException("JsonStorage not found with id: " );
-//        }
-//    }
+    public JsonStorage getShipmentTemplate(String mode) {
+        String email= SecurityContextHolder.getContext().getAuthentication().getName();
+        JwtUser user= jwtUserRepository.findUserByEmail(email);
+
+
+        JsonStorage jsonStorage = (JsonStorage) jsonStorageRepository.findByOrgCodeAndMode(user.getOrgCode(),mode);
+        String jsondata = jsonStorage.getJsonData();
+        // method to convert the string to json and remove necessary things
+        ObjectMapper mapper = new ObjectMapper();
+
+        try {
+            ArrayNode arrayNode = (ArrayNode) mapper.readTree(jsondata);
+
+            for (JsonNode rootNode : arrayNode) {
+                ((ObjectNode) rootNode).remove("isDragEnabled");
+                ((ObjectNode) rootNode).remove("isDropEnabledAllSections");
+                ((ObjectNode) rootNode).remove("dropEnabledSections");
+                ((ObjectNode) rootNode).remove("itemsDropEnabledSections");
+                ((ObjectNode) rootNode).remove("isDropEnable");
+                ((ObjectNode) rootNode).remove("isitemDragEnabled");
+                ((ObjectNode) rootNode).remove("isitemDropEnabled");
+            }
+
+            String modifiedJson = mapper.writeValueAsString(arrayNode);
+            jsonStorage.setJsonData(modifiedJson);
+
+            return jsonStorage;
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException("JsonStorage not found with id: " );
+        }
+    }
 }

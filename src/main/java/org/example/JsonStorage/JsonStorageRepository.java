@@ -15,6 +15,6 @@ public interface JsonStorageRepository extends JpaRepository<JsonStorage, Long> 
     JsonStorage findByOrgCodeDefault();
 
     List<JsonStorage> findByOrgCode(String orgCode);
-//    @Query(value = "SELECT * FROM json_storage WHERE org_code = :orgcode And mode=:mode", nativeQuery = true)
-//    JsonStorage findByOrgCodeAndMode(@Param("orgCode") String orgCode, @Param("mode")  String mode);
+    @Query(value = "SELECT * FROM json_storage WHERE org_code = :orgCode And mode=:mode", nativeQuery = true)
+    JsonStorage findByOrgCodeAndMode(@Param("orgCode") String orgCode, @Param("mode")  String mode);
 }
