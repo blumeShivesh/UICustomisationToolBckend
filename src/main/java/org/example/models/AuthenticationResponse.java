@@ -10,8 +10,11 @@ public class AuthenticationResponse {
     String username;
     String orgCode;
 
-    public AuthenticationResponse(String jwt) {
+    public AuthenticationResponse(String jwt,String username,String orgCode) {
         this.jwt = jwt;
+        this.username = username;
+        this.orgCode = orgCode;
+
     }
     public String getJwt() {
         return jwt;

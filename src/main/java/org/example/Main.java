@@ -46,22 +46,6 @@ public class Main {
         return "Greetings from Spring Boot!";
     }
     @CrossOrigin(origins = "http://localhost:3000")
-    @PostMapping("/authenticate2")
-    public ResponseEntity<?> authenticate(@RequestBody @NotNull AuthenticationRequest authenticationRequest) {
-        System.out.println("Main.authenticate: " + authenticationRequest.getUsername() + " " + authenticationRequest.getPassword());
-        Authentication authenticate = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
-        );
-
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
-
-        final String jwt = jwtUtil.generateToken(userDetails);
-
-        return ResponseEntity.ok(new AuthenticationResponse(jwt));
-
-    }
-    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/signup")
     public ResponseEntity<?> registerUser( @RequestBody @NotNull SignUpRequest signUpRequest)
     {
@@ -110,7 +94,7 @@ public class Main {
                     .ok()
                     .header(HttpHeaders.SET_COOKIE, springCookie.toString())
                     .build();
-            return ResponseEntity.ok(new AuthenticationResponse(jwt));
+            return ResponseEntity.ok(new AuthenticationResponse(jwt,loginRequest.getEmail(),jwtUserRepository.findUserByEmail(loginRequest.getEmail()).getOrgCode()));
         }
         catch (Exception e) {
             System.out.println("Main.authenticateUser: " + e.getMessage());
