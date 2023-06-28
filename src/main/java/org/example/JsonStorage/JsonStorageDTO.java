@@ -11,4 +11,5 @@ public class JsonStorageDTO {
     private long id;
     private String jsonData;
     private String mode;
+    private String templateName;
 }

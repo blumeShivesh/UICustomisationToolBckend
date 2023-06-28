@@ -16,6 +16,11 @@ public class AuthenticationResponse {
         this.orgCode = orgCode;
 
     }
+    public AuthenticationResponse(String jwt,String username, String orgCode){
+        this.jwt = jwt;
+        this.orgCode = orgCode;
+        this.username=username;
+    }
     public String getJwt() {
         return jwt;
     }
