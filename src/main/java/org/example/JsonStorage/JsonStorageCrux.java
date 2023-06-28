@@ -11,7 +11,7 @@ public class JsonStorageCrux {
     private String mode;
     private long id;
     JsonStorageCrux(String orgCode,String templateName,String mode,long id) {
-        this.id = id;c
+        this.id = id;
         this.orgCode = orgCode;
         this.templateName = templateName ;
         this.mode = mode;
