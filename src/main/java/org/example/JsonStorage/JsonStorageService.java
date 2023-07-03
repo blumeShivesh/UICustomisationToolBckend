@@ -13,6 +13,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 // should understand get all Json.
 
@@ -28,16 +29,21 @@ public class JsonStorageService {
     }
 
     public String saveJson(JsonStorage jsonStorage) {
+        JsonStorage existingJsonStorage = jsonStorageRepository.findByOrgCodeAndMode(jsonStorage.getOrgCode(),jsonStorage.getMode());
+        if(existingJsonStorage==null) {
+            existingJsonStorage = jsonStorage;
+        }
+        else existingJsonStorage.setJsonData(jsonStorage.getJsonData());
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName(); // returns the email
-        jsonStorage.setCreatedBy(email);
-        jsonStorage.setUpdatedBy(email);
+        existingJsonStorage.setCreatedBy(email);
+        existingJsonStorage.setUpdatedBy(email);
         System.out.println("JsonStorageService.saveJson: " + email);
         System.out.println("JsonStorageService.saveJson: " + jwtUserRepository.findUserByEmail(email));
         JwtUser user = jwtUserRepository.findUserByEmail(email);
-        System.out.println("JsonStorageService.saveJson: " + jsonStorage.getOrgCode());
-        JsonStorage savedJson = jsonStorageRepository.save(jsonStorage);
-        System.out.println("JsonStorageService.saveJson: " + savedJson.getJsonData());
+        System.out.println("JsonStorageService.saveJson: " + existingJsonStorage.getOrgCode());
+        JsonStorage savedJson = jsonStorageRepository.save(existingJsonStorage);
+        System.out.println("JsonStorageService.saveJson: " + existingJsonStorage.getJsonData());
         return savedJson.getJsonData();
     }
 
@@ -74,19 +80,31 @@ public JsonStorage getJsonById(Long id) {
     }
 }
 
-    public List<JsonStorage> getAllJson() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        JwtUser user = jwtUserRepository.findUserByEmail(email);
-
-         List<JsonStorage> jsonStorageList =     jsonStorageRepository.findByOrgCode(user.getOrgCode());
-        JsonStorage defaultJson = jsonStorageRepository.findByOrgCodeDefault();
-         System.out.println("JsonStorageService.getAllJson: " + defaultJson);
-         if (defaultJson != null) {
-            jsonStorageList.add(defaultJson);
+    public List<JsonStorageCrux> getAllJson() { // bina jsondata
+//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//        String email = authentication.getName();
+//        JwtUser user = jwtUserRepository.findUserByEmail(email);
+//
+//         List<JsonStorage> jsonStorageList =     jsonStorageRepository.findByOrgCode(user.getOrgCode());
+//        JsonStorage defaultJson = jsonStorageRepository.findByOrgCodeDefault();
+//         System.out.println("JsonStorageService.getAllJson: " + defaultJson);
+//         if (defaultJson != null) {
+//            jsonStorageList.add(defaultJson);
+//        }
+//        List<JsonStorageCrux> jsonStorageCruxList = new ArrayList<>();
+//        for(JsonStorage i: jsonStorageList){
+//            JsonStorageCrux temp= new JsonStorageCrux(i.getOrgCode(),i.getTemplateName(),i.getMode(),i.getId());
+//            jsonStorageCruxList.add(temp);
+//        }
+//        return jsonStorageCruxList;
+        List <JsonStorage> jsonStorageList = jsonStorageRepository.findAll();
+        List <JsonStorageCrux> jsonStorageCruxList =new ArrayList<>();;
+        for(JsonStorage i: jsonStorageList){
+            JsonStorageCrux jsonStorageCrux = new JsonStorageCrux(i.getOrgCode(),i.getTemplateName(),i.getMode(),i.getId());
+            jsonStorageCruxList.add(jsonStorageCrux);
         }
+        return jsonStorageCruxList;
 
-        return jsonStorageList;
     }
 
     public void deleteJson(Long id) {
