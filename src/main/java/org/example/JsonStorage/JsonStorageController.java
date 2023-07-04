@@ -47,7 +47,7 @@ public class JsonStorageController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedJson);
     }
 
-    @GetMapping("/{mode}/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<JsonStorageDTO> getJsonById(@PathVariable("id") Long id) {
         System.out.println("JsonStorageController.getJsonById: " + id);
 //        JsonStorage jsonStorage = jsonStorageService.getJsonById(id);
@@ -56,14 +56,14 @@ public class JsonStorageController {
         System.out.println("JsonStorageController.getJsonById: " + jsonStorageDTO.getJsonData());
         return ResponseEntity.ok(jsonStorageDTO);
     }
-    // u will have so many users with differnet mode, and for each user u can fetch data using
-    @DeleteMapping("/{mode}/{id}")
+    // u will have so many users with different mode, and for each user u can fetch data using
+    @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteJson(@PathVariable("id") Long id) {
         jsonStorageService.deleteJson(id);
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/{mode}/deleteAll")
+    @DeleteMapping("/deleteAll")
     public ResponseEntity<Void> deleteAllJson() {
         System.out.println("JsonStorageController.deleteAllJson: ");
         jsonStorageService.deleteAllJson();

@@ -38,6 +38,7 @@ public class JsonStorageService {
         String email = authentication.getName(); // returns the email
         existingJsonStorage.setCreatedBy(email);
         existingJsonStorage.setUpdatedBy(email);
+        existingJsonStorage.setTemplateName(jsonStorage.getTemplateName());
         System.out.println("JsonStorageService.saveJson: " + email);
         System.out.println("JsonStorageService.saveJson: " + jwtUserRepository.findUserByEmail(email));
         JwtUser user = jwtUserRepository.findUserByEmail(email);
@@ -100,8 +101,16 @@ public JsonStorage getJsonById(Long id) {
         List <JsonStorage> jsonStorageList = jsonStorageRepository.findAll();
         List <JsonStorageCrux> jsonStorageCruxList =new ArrayList<>();;
         for(JsonStorage i: jsonStorageList){
-            JsonStorageCrux jsonStorageCrux = new JsonStorageCrux(i.getOrgCode(),i.getTemplateName(),i.getMode(),i.getId());
-            jsonStorageCruxList.add(jsonStorageCrux);
+            System.out.println(i.getTemplateName());
+            if(i.getTemplateName().equals("defaultBlumeTemplate")){
+                continue;
+            }
+            else {
+                JsonStorageCrux jsonStorageCrux = new JsonStorageCrux(i.getOrgCode(), i.getTemplateName(), i.getMode(), i.getId());
+                jsonStorageCruxList.add(jsonStorageCrux);
+            }
+//            JsonStorageCrux jsonStorageCrux = new JsonStorageCrux(i.getOrgCode(), i.getTemplateName(), i.getMode(), i.getId());
+//            jsonStorageCruxList.add(jsonStorageCrux);
         }
         return jsonStorageCruxList;
 
