@@ -52,7 +52,7 @@ public class JsonStorageController {
         System.out.println("JsonStorageController.getJsonById: " + id);
 //        JsonStorage jsonStorage = jsonStorageService.getJsonById(id);
         JsonStorage jsonStorage = jsonStorageService.getJsonById(id);
-        JsonStorageDTO jsonStorageDTO = new JsonStorageDTO(jsonStorage.getId(),jsonStorage.getJsonData(), jsonStorage.getMode(),jsonStorage.getTemplateName());
+        JsonStorageDTO jsonStorageDTO = new JsonStorageDTO(jsonStorage.getId(),jsonStorage.getJsonData(), jsonStorage.getMode(),jsonStorage.getTemplateName(), jsonStorage.getOrgCode());
         System.out.println("JsonStorageController.getJsonById: " + jsonStorageDTO.getJsonData());
         return ResponseEntity.ok(jsonStorageDTO);
     }
@@ -83,7 +83,7 @@ public class JsonStorageController {
         System.out.println("JsonStorageController.getDefaultTemplate: ");
         JsonStorage jsonStorage = jsonStorageService.getDefaultTemplate();
         System.out.println("JsonStorageController.getDefaultTemplate: " + jsonStorage.getJsonData());
-        JsonStorageDTO jsonStorageDTO = new JsonStorageDTO(jsonStorage.getId(),jsonStorage.getJsonData(), jsonStorage.getMode(),jsonStorage.getTemplateName());
+        JsonStorageDTO jsonStorageDTO = new JsonStorageDTO(jsonStorage.getId(),jsonStorage.getJsonData(), jsonStorage.getMode(),jsonStorage.getTemplateName(), jsonStorage.getOrgCode());
         System.out.println("JsonStorageController.getDefaultTemplate: " + jsonStorageDTO.getJsonData());
         return ResponseEntity.ok(jsonStorageDTO);
     }
@@ -91,7 +91,7 @@ public class JsonStorageController {
     public ResponseEntity<JsonStorageDTO> getShipmentTemplate(@PathVariable("mode") String mode) {
         System.out.println("JsonStorageController.getShipmentTemplate: ");
         JsonStorage jsonStorage = jsonStorageService.getShipmentTemplate(mode);
-        JsonStorageDTO jsonStorageDTO = new JsonStorageDTO(jsonStorage.getId(),jsonStorage.getJsonData(), jsonStorage.getMode(),jsonStorage.getTemplateName());
+        JsonStorageDTO jsonStorageDTO = new JsonStorageDTO(jsonStorage.getId(),jsonStorage.getJsonData(), jsonStorage.getMode(),jsonStorage.getTemplateName(), jsonStorage.getOrgCode());
         System.out.println("JsonStorageController.getShipmentTemplate: " + jsonStorage.getJsonData());
         return ResponseEntity.ok(jsonStorageDTO);
     }

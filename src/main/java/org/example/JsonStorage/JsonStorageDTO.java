@@ -12,4 +12,5 @@ public class JsonStorageDTO {
     private String jsonData;
     private String mode;
     private String templateName;
+    private String orgCode;
 }
