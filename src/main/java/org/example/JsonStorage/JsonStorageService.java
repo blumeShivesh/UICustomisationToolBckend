@@ -148,7 +148,7 @@ public JsonStorage getJsonById(Long id) {
         String email= SecurityContextHolder.getContext().getAuthentication().getName();
         JwtUser user= jwtUserRepository.findUserByEmail(email);
 
-
+        System.out.println("JsonStorageService.getShipmentTemplate: " + user.getOrgCode());
         JsonStorage jsonStorage = (JsonStorage) jsonStorageRepository.findByOrgCodeAndMode(user.getOrgCode(),mode);
         String jsondata = jsonStorage.getJsonData();
         // method to convert the string to json and remove necessary things
