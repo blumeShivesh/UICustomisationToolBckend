@@ -33,9 +33,7 @@ public class JsonStorageController {
 // return id,orgcode,mode,templatename
     @GetMapping
     public ResponseEntity<List<JsonStorageCrux>> getJson() {
-
         List<JsonStorageCrux> jsonStorageCruxList = jsonStorageService.getAllJson();
-
         return ResponseEntity.ok(jsonStorageCruxList);
     }
     @PostMapping

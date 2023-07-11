@@ -34,8 +34,10 @@ public class JsonStorageService {
             existingJsonStorage = jsonStorage;
         }
         else existingJsonStorage.setJsonData(jsonStorage.getJsonData());
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName(); // returns the email
+        String email = authentication.getName();
+       // returns the email
         existingJsonStorage.setCreatedBy(email);
         existingJsonStorage.setUpdatedBy(email);
         existingJsonStorage.setTemplateName(jsonStorage.getTemplateName());
@@ -52,33 +54,36 @@ public class JsonStorageService {
 public JsonStorage getJsonById(Long id) {
     JsonStorage jsonStorage = jsonStorageRepository.findById(id)
             .orElseThrow(() -> new NotFoundException("JsonStorage not found with id: " + id));
-    if(jsonStorage.getOrgCode() !=null&&jsonStorage.getOrgCode()=="admin") {
-        return jsonStorage;
-    }
-    String jsondata = jsonStorage.getJsonData();
-    // method to convert the string to json and remove necessary things
-    ObjectMapper mapper = new ObjectMapper();
-
-    try {
-        ArrayNode arrayNode = (ArrayNode) mapper.readTree(jsondata);
-
-        for (JsonNode rootNode : arrayNode) {
-            ((ObjectNode) rootNode).remove("isDragEnabled");
-            ((ObjectNode) rootNode).remove("isDropEnabledAllSections");
-            ((ObjectNode) rootNode).remove("dropEnabledSections");
-            ((ObjectNode) rootNode).remove("itemsDropEnabledSections");
-            ((ObjectNode) rootNode).remove("isDropEnable");
-            ((ObjectNode) rootNode).remove("isitemDragEnabled");
-            ((ObjectNode) rootNode).remove("isitemDropEnabled");
-        }
-
-        String modifiedJson = mapper.writeValueAsString(arrayNode);
-        jsonStorage.setJsonData(modifiedJson);
-
-        return jsonStorage;
-    } catch (JsonProcessingException e) {
-        throw new RuntimeException("JsonStorage not found with id: " + id);
-    }
+    return jsonStorage;
+//    Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+//    String email = authentication.getName();
+//    if(jsonStorage.getOrgCode() !=null&&jsonStorage.getOrgCode()=="admin") {
+//        return jsonStorage;
+//    }
+//    String jsondata = jsonStorage.getJsonData();
+//    // method to convert the string to json and remove necessary things
+//    ObjectMapper mapper = new ObjectMapper();
+//
+//    try {
+//        ArrayNode arrayNode = (ArrayNode) mapper.readTree(jsondata);
+//
+//        for (JsonNode rootNode : arrayNode) {
+//            ((ObjectNode) rootNode).remove("isDragEnabled");
+//            ((ObjectNode) rootNode).remove("isDropEnabledAllSections");
+//            ((ObjectNode) rootNode).remove("dropEnabledSections");
+//            ((ObjectNode) rootNode).remove("itemsDropEnabledSections");
+//            ((ObjectNode) rootNode).remove("isDropEnable");
+//            ((ObjectNode) rootNode).remove("isitemDragEnabled");
+//            ((ObjectNode) rootNode).remove("isitemDropEnabled");
+//        }
+//
+//        String modifiedJson = mapper.writeValueAsString(arrayNode);
+//        jsonStorage.setJsonData(modifiedJson);
+//
+//        return jsonStorage;
+//    } catch (JsonProcessingException e) {
+//        throw new RuntimeException("JsonStorage not found with id: " + id);
+//    }
 }
 
     public List<JsonStorageCrux> getAllJson() { // bina jsondata
@@ -102,7 +107,7 @@ public JsonStorage getJsonById(Long id) {
         List <JsonStorageCrux> jsonStorageCruxList =new ArrayList<>();;
         for(JsonStorage i: jsonStorageList){
             System.out.println(i.getTemplateName());
-            if(i.getTemplateName().equals("defaultBlumeTemplate")){
+            if(i.getTemplateName().equals("DefaultBlumeTemplate")){
                 continue;
             }
             else {
