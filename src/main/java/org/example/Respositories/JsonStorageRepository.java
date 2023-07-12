@@ -1,6 +1,6 @@
 package org.example.JsonStorage;
 
-import org.example.models.JwtUser;
+import org.example.Entities.JsonStorage;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;

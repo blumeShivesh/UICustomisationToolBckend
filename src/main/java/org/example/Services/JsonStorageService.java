@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-// should understand get all Json.
+
 
 @Service
 public class JsonStorageService {
